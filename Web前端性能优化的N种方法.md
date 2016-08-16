@@ -62,4 +62,51 @@
 
 详见：https://developers.google.com/speed/docs/insights/AvoidRedirects
 
+## 10. Facebook的BigPipe技术
+BigPipe提出分块的概念，即根据页面内容位置的不同，将整个页面分成不同的块儿——称为pagelet。该技术的设计者Changhao Jiang 是研究电子电路的博士，可能从微机上得到了启发，将众多pagelet加载的不同阶段像流水线一样在浏览器和服务器上执行，这样就做到了浏览器和服务器的并行化，从而达到重叠服务器端运行时间和浏览器端运行时间的目的。使用BigPipe 不仅可以节省时间，使加载的时间缩短，而且可以同过pagelet的分步输出，使一部分的页面内容更快的输出，从而获得更好的用户体验。
+
+详见：[GitHub](https://github.com/bigpipe/bigpipe) or [BigPipe学习研究](http://www.searchtb.com/2011/04/an-introduction-to-bigpipe.html)
+
+## 11. 预加载技术
+预先告知浏览器某些资源可能在将来会被使用到。具体包括以下几种技术：
++ DNS预解析 dns-prefetch
++ 预连接 preconnect
++ 预获取 prefetch
++ subresource
++ 预渲染 prerender
++ 预加载 preload
+
+详见：[前端性能优化 - 资源预加载](http://bubkoo.com/2015/11/19/prefetching-preloading-prebrowsing/)
+
+## 12. 方兴未艾的WebAssembly
+WebAssembly是一种新的字节码格式。它的缩写是".wasm"，.wasm 为文件名后缀，是一种新的底层安全的二进制语法。它被定义为“精简、加载时间短的格式和执行模型”，并且被设计为Web 多编程语言目标文件格式。 这意味着浏览器端的性能会得到极大提升，它也使得我们能够实现一个底层构建模块的集合，例如，强类型和块级作用域。 支持WebAssembly的浏览器可以识别二进制格式的文本，它有能力编译比JS文本小得多的二进制包。相比解析js代码，JavaScript引擎破译二进制格式的速度要快得多。 这将给web应用带来类似与本地应用的性能体验。Webassembly让开发者有能力选择之前那些不能用来开发web应用的语言来进行web开发，或者他们也可以继续使用简单易用的JavaScript。
+
+详见：[来谈谈WebAssembly是个啥？为何说它会影响每一个Web开发者？](http://imweb.io/topic/567fd838834878282edc7f9b)
+
+## 13. CSS Sprites
+合并CSS图片，有效减少图片的请求次数。
+
+## 14. Icon Font技术
+图标字体技术是把一些简单的图标制作成字体，然后让图标变成和字体一样使用。
+
+## 15. CDN加速
+CDN（contentdistribute network，内容分发网络）的本质仍然是一个缓存，而且将数据缓存在离用户最近的地方，使用户以最快速度获取数据，即所谓网络访问第一跳。另外，浏览器对与同一域名的并行下载数量是有限制的，使用CDN可有效加快并行下载速度。
+
+## 16. Lazy Load Images
+在页面刚加载的时候可以只加载第一屏中的图片，当用户继续往后滚屏的时候才加载后续的图片。比如有jQuery插件[Lazy Load](http://www.appelsiini.net/projects/lazyload)。
+
+## 17. 反向代理
+传统代理服务器位于浏览器一侧，代理浏览器将http请求发送到互联网上，而反向代理服务器位于网站机房一侧，代理网站web服务器接收http请求，如下图所示。比如有著名的：Nginx。
+![反向代理架构图](http://img.blog.csdn.net/20160521222319255)
+
+## 18. WebSocket与Socket.IO
+
+## 19. CSS选择器优化
+
+## 20. JavaScript代码优化
+
+
+
+
+
 (未完待续)
