@@ -288,3 +288,96 @@ p的状态由p1、p2、p3决定，分成两种情况。
     - （3）参数不是具有then方法的对象，或根本就不是对象。如果参数是一个原始值，或者是一个不具有then方法的对象，则Promise.resolve方法返回一个新的Promise对象，状态为Resolved。Promise.resolve方法的参数，会同时传给回调函数。
     - （4）不带有任何参数。Promise.resolve方法允许调用时不带参数，直接返回一个Resolved状态的Promise对象。所以，如果希望得到一个Promise对象，比较方便的方法就是直接调用Promise.resolve方法。需要注意的是，立即resolve的Promise对象，是在本轮“事件循环”（event loop）的结束时，而不是在下一轮“事件循环”的开始时。
 + Promise.reject(reason)方法也会返回一个新的Promise实例，该实例的状态为rejected。它的参数用法与Promise.resolve方法完全一致。
+
+# 17. 异步操作和Async函数
++ Thunk函数与co模块省略。
++ Async函数内置执行器；返回值是Promise；await命令后面是一个Promise对象，如果不是，会被转成一个立即resolve的Promise对象。
+
+# 18. Class
++ 类的所有方法都定义在类的prototype属性上面。
++ 类的内部所有定义的方法，都是不可枚举的（non-enumerable），这一点与ES5的行为不一致。
++ 类的构造函数，不使用new是没法调用的，会报错。这是它跟普通构造函数的一个主要区别，后者不用new也可以执行。
++ 与ES5一样，实例的属性除非显式定义在其本身（即定义在this对象上），否则都是定义在原型上（即定义在class上）。
++ 与ES5一样，类的所有实例共享一个原型对象。这意味着，使用实例的__proto__属性改写原型，必须相当谨慎，不推荐使用，因为这会改变Class的原始定义，影响到所有实例。
++ Class不存在变量提升（hoist），这一点与ES5完全不同。这种规定的原因与下文要提到的继承有关，必须保证子类在父类之后定义。
++ 私有方法：
+    - 以下划线(_)开头标志方法名，
+    - 将私有方法移出模块，因为模块内部的所有方法都是对外可见的。
+    ```JavaScript
+    class Widget {
+        foo (baz) {
+            bar.call(this, baz);
+        }
+
+        // ...
+    }
+    function bar(baz) {
+        return this.snaf = baz;
+    }
+    ```
+    - 还有一种方法是利用Symbol值的唯一性，将私有方法的名字命名为一个Symbol值。
++ 类和模块的内部，默认就是严格模式，所以不需要使用use strict指定运行模式。
++ 子类必须在constructor方法中调用super方法，否则新建实例时会报错。这是因为子类没有自己的this对象，而是继承父类的this对象，然后对其进行加工。如果不调用super方法，子类就得不到this对象。
++ ES5的继承，实质是先创造子类的实例对象this，然后再将父类的方法添加到this上面（Parent.apply(this)）。ES6的继承机制完全不同，实质是先创造父类的实例对象this（所以必须先调用super方法），然后再用子类的构造函数修改this。
++ 在子类的构造函数中，只有调用super之后，才可以使用this关键字。
++ 大多数浏览器的ES5实现之中，每一个对象都有\__proto\__属性，指向对应的构造函数的prototype属性。Class作为构造函数的语法糖，同时有prototype属性和\__proto\__属性，因此同时存在两条继承链。
+    - （1）子类的\__proto\__属性，表示构造函数的继承，总是指向父类。
+    - （2）子类prototype属性的\__proto\__属性，表示方法的继承，总是指向父类的prototype属性。
+
+    这样的结果是因为，类的继承是按照下面的模式实现的(B继承自A)。
+    ```JavaScript
+        class A {
+        }
+
+        class B {
+        }
+
+        // B的实例继承A的实例
+        Object.setPrototypeOf(B.prototype, A.prototype);
+
+        // B继承A的静态属性
+        Object.setPrototypeOf(B, A);
+    ```
++ Extends 的继承目标
+
+    extends关键字后面可以跟多种类型的值。
+    ```JavaScript
+    class B extends A {
+    }
+    ```
+    上面代码的A，只要是一个有prototype属性的函数，就能被B继承。由于函数都有prototype属性（除了Function.prototype函数），因此A可以是任意函数。下面，讨论三种特殊情况。
+    - 第一种特殊情况，子类继承Object类。
+        ```JavaScript
+        class A extends Object {
+        }
+
+        A.__proto__ === Object // true
+        A.prototype.__proto__ === Object.prototype // true
+        ```
+        这种情况下，A其实就是构造函数Object的复制，A的实例就是Object的实例。
+    - 第二种特殊情况，不存在任何继承。
+        ```JavaScript
+        class A {
+        }
+
+        A.__proto__ === Function.prototype // true
+        A.prototype.__proto__ === Object.prototype // true
+        ```
+        这种情况下，A作为一个基类（即不存在任何继承），就是一个普通函数，所以直接继承Funciton.prototype。但是，A调用后返回一个空对象（即Object实例），所以A.prototype.\__proto\__指向构造函数（Object）的prototype属性。
+    - 第三种特殊情况，子类继承null。
+        ```JavaScript
+        class A extends null {
+        }
+
+        A.__proto__ === Function.prototype // true
+        A.prototype.__proto__ === undefined // true
+        ```
+        这种情况与第二种情况非常像。A也是一个普通函数，所以直接继承Funciton.prototype。但是，A调用后返回的对象不继承任何方法，所以它的\__proto\__指向Function.prototype
++ super这个关键字，有两种用法，含义不同。
+    - （1）作为函数调用时（即super(...args)），super代表父类的构造函数。
+    - （2）作为对象调用时（即super.prop或super.method()），super代表父类。注意，此时super即可以引用父类实例的属性和方法，也可以引用父类的静态方法。
++ ES6中可以继承原生构造函数（Boolean, Number, String, Object, Function, Date, Array, Error, RegExp），而ES5中不可以。注意，继承Object的子类，有一个[行为差异](http://stackoverflow.com/questions/36203614/super-does-not-pass-arguments-when-instantiating-a-class-extended-from-object)。
++ 类相当于实例的原型，所有在类中定义的方法，都会被实例继承。如果在一个方法前，加上static关键字，就表示该方法不会被实例继承，而是直接通过类来调用，这就称为“静态方法”。
++ 父类的静态方法，可以被子类继承。静态方法也是可以从super对象上调用的。
++ ES6明确规定，Class内部只有静态方法，没有静态属性。ES7中可以支持类的实例属性，和类的静态属性。
++ new.target属性：ES6为new命令引入了一个new.target属性，（在构造函数中）返回new命令作用于的那个构造函数。如果构造函数不是通过new命令调用的，new.target会返回undefined，因此这个属性可以用来确定构造函数是怎么调用的。
