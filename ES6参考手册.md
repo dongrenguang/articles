@@ -381,3 +381,43 @@ p的状态由p1、p2、p3决定，分成两种情况。
 + 父类的静态方法，可以被子类继承。静态方法也是可以从super对象上调用的。
 + ES6明确规定，Class内部只有静态方法，没有静态属性。ES7中可以支持类的实例属性，和类的静态属性。
 + new.target属性：ES6为new命令引入了一个new.target属性，（在构造函数中）返回new命令作用于的那个构造函数。如果构造函数不是通过new命令调用的，new.target会返回undefined，因此这个属性可以用来确定构造函数是怎么调用的。
+
+# 19. 修饰器(Decorator)（ES7中的特性）
++ 修饰器本质就是编译时执行的函数。
++ 可修饰类和类方法，不可以修饰函数（因为声明提升的存在）。
++ eg.
+
+    类的修饰：
+    ```JavaScript
+        function testable(target) {
+            target.isTestable = true;
+        }
+
+        @testable
+        class MyTestableClass {}
+        console.log(MyTestableClass.isTestable) // true
+    ```
+
+    类方法的修饰
+    ```JavaScript
+        class Person {
+            @readonly
+            name() { return `${this.first} ${this.last}` }
+        }
+
+        function readonly(target, name, descriptor) {
+            // descriptor对象原来的值如下
+            // {
+            //   value: specifiedFunction,
+            //   enumerable: false,
+            //   configurable: true,
+            //   writable: true
+            // };
+            descriptor.writable = false;
+            return descriptor;
+        }
+
+        readonly(Person.prototype, 'name', descriptor);
+        // 类似于
+        Object.defineProperty(Person.prototype, 'name', descriptor);
+    ```
