@@ -16,7 +16,6 @@
 + 字符串也可以解构赋值。这是因为此时，字符串被转换成了一个类似数组的对象。
 + 解构赋值时，如果等号右边是数值和布尔值，则会先转为对象。
 + 解构赋值的规则是，只要等号右边的值不是对象，就先将其转为对象。由于undefined和null无法转为对象，所以对它们进行解构赋值，都会报错。
-+ 解构赋值的规则是，只要等号右边的值不是对象，就先将其转为对象。由于undefined和null无法转为对象，所以对它们进行解构赋值，都会报错。
 + 函数参数的解构赋值。“如果解构失败，x和y等于默认值。”
 + [圆括号问题](http://es6.ruanyifeng.com/#docs/destructuring#圆括号问题)：
   - 可以使用圆括号的情况只有一种：赋值语句的非模式部分，可以使用圆括号。
@@ -110,7 +109,6 @@ var proxy = new Proxy(target, handler);
     - （3）`has(target, propKey)`: 拦截propKey in proxy的操作，以及对象的hasOwnProperty方法，返回一个布尔值。
     - （4）`deleteProperty(target, propKey)`: 拦截delete proxy[propKey]的操作，返回一个布尔值。
     - （5）`ownKeys(target)`: 拦截Object.getOwnPropertyNames(proxy)、Object.getOwnPropertySymbols(proxy)、Object.keys(proxy)，返回一个数组。该方法返回对象所有自身的属性，而Object.keys()仅返回对象可遍历的属性。
-
     - （6）`getOwnPropertyDescriptor(target, propKey)`: 拦截Object.getOwnPropertyDescriptor(proxy, propKey)，返回属性的描述对象。
     - （7）`defineProperty(target, propKey, propDesc)`: 拦截Object.defineProperty(proxy, propKey, propDesc）、Object.defineProperties(proxy, propDescs)，返回一个布尔值。
     - （8）`preventExtensions(target)`: 拦截Object.preventExtensions(proxy)，返回一个布尔值。
