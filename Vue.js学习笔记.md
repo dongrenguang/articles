@@ -11,6 +11,7 @@
 
 
 # Vue实例
+- 每个 Vue.js 应用都是通过构造函数 Vue 创建一个 Vue 的根实例 启动的。
 - 不要在实例属性或者回调函数中（如 vm.$watch('a', newVal => this.myMethod())）使用箭头函数。
 - 实例的生命周期：beforeCreate、created、beforeMount、mounted、beforeUpdate、updated、beforeDestroy、destroyed。
 
@@ -54,3 +55,36 @@
     * .lazy：在默认情况下， v-model 在 input 事件中同步输入框的值与数据 (除了 上述 IME 部分)，但你可以添加一个修饰符 lazy ，从而转变为在 change 事件中同步。
     * .number：自动将用户的输入值转为 Number 类型。
     * .trim：自动过滤用户输入的首尾空格。
+
+# 组件
+- 要注册一个全局组件，可以使用 Vue.component(tagName, options)。
+- 要确保在初始化根实例 之前 注册了组件。
+- 不必在全局注册每个组件。通过使用组件实例选项注册，可以使组件仅在另一个实例/组件的作用域中可用。
+- is属性
+- data必须是函数。
+- 构成组件：父子组件的关系可以总结为 props down, events up。
+- 当使用的不是字符串模版，camelCased (驼峰式) 命名的 prop 需要转换为相对应的 kebab-case (短横线隔开式) 命名。
+- 如果想传递一个实际的number，需要使用 v-bind。
+- 单向数据流：每次父组件更新时，子组件的所有 prop 都会更新为最新值；不应该在子组件内部改变 prop。
+- props属性的两个作用：
+	* prop 作为初始值传入后，子组件想把它当作局部数据来用；
+	* prop 作为初始值传入，由子组件处理成其它数据输出。
+- 正确的使用方式是：
+	* 定义一个局部变量（data），并用 prop 的值初始化它；
+	* 定义一个计算属性（computed），处理 prop 的值并返回。
+- 注意在 JavaScript 中对象和数组是引用类型，指向同一个内存空间，如果 prop 是一个对象或数组，在子组件内部改变它会影响父组件的状态。
+- prop验证。
+- 每个 Vue 实例都实现了事件接口(Events interface)，即可以使用 $on(eventName) 监听事件；可以使用 $emit(eventName) 触发事件。
+- 你可能想在某个组件的根元素上监听一个原生事件。可以使用 .native 修饰 v-on 。
+- 在2.0版本中移除了.sync（双向绑定），但在2.3版本中又重新加回来了，只不过只是一个事件监听的语法糖，在子组件中改变父组件状态的代码需要更加容易被区分。
+```javascript
+	// 在父组件中
+	<comp :foo.sync="bar"></comp>
+
+	// 在子组件中
+	this.$emit('update:foo', newValue)
+```
+- 使用 v-model 来进行数据双向绑定，只不过是语法糖。
+- 要让自定义组件的 v-model 生效，它必须：接受一个 value 属性；在有新的 value 时触发 input 事件。
+- 定制组件模型：像在checkboxes或radio中，value可能还有其他的用途，可以设置model选项来避免冲突。
+- 非父子组件通信：简单情况下可以使用一个空的Vue实例作为中央事件总线；复杂的情况下需要使用专门的状态管理模式（例如：类Flux的Vuex）。
