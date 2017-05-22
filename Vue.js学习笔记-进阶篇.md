@@ -1,0 +1,35 @@
+# 深入响应式原理
+- 把一个普通 JavaScript 对象传给 Vue 实例的 data 选项，Vue 将遍历此对象所有的属性，并使用 Object.defineProperty 把这些属性全部转为 getter/setter。
+- 每个组件实例都有相应的 watcher 实例对象，它会在组件渲染的过程中把属性记录为依赖，之后当依赖项的 setter 被调用时，会通知 watcher 重新计算，从而致使它关联的组件得以更新。
+- Vue 不能检测到对象属性的添加或删除。由于 Vue 会在初始化实例时对属性执行 getter/setter 转化过程，所以属性必须在 data 对象上存在才能让 Vue 转换它，这样才能让它是响应的。
+- Vue 不允许在已经创建的实例上动态添加新的根级响应式属性(root-level reactive property)。然而它可以使用 Vue.set(object, key, value) 方法或 vm.$set 实例方法将响应属性添加到嵌套的对象上。
+- 由于 Vue 不允许动态添加根级响应式属性，所以你必须在初始化实例前声明根级响应式属性，哪怕只是一个空值。
+- 只要观察到数据变化，Vue 将开启一个队列，并缓冲在同一事件循环中发生的所有数据改变。然后，在下一个的事件循环“tick”中，Vue 刷新队列并执行实际（已去重的）工作。
+- Vue 在内部尝试对异步队列使用原生的 Promise.then 和 MutationObserver，如果执行环境不支持，会采用 setTimeout(fn, 0) 代替。
+- 为了在数据变化之后等待 Vue 完成更新 DOM ，可以在数据变化之后立即使用 Vue.nextTick(callback) 。这样回调函数在 DOM 更新完成后就会调用。
+- 在组件内使用 vm.$nextTick() 实例方法特别方便，因为它不需要全局 Vue ，并且回调函数中的 this 将自动绑定到当前的 Vue 实例上。
+
+# 过渡效果
+- Vue 提供了 transition 的封装组件，在下列情形中，可以给任何元素和组件添加 entering/leaving 过渡：
+    * 条件渲染 （使用 v-if）
+    * 条件展示 （使用 v-show）
+    * 动态组件
+    * 组件根节点
+- 有 6 个(CSS)类名在 enter/leave 的过渡中切换：v-enter, v-enter-active, v-enter-to, v-leave, v-leave-active, v-leave-to.
+- JavaScript过渡钩子：before-enter、enter、after-enter、enter-cancelled、before-leave、leave、after-leave、leave-cancelled。
+- 当只用 JavaScript 过渡的时候， 在 enter 和 leave 中，回调函数 done 是必须的 。 否则，它们会被同步调用，过渡会立即完成。
+- 推荐对于仅使用 JavaScript 过渡的元素添加 v-bind:css="false"，Vue 会跳过 CSS 的检测。这也可以避免过渡过程中 CSS 的影响。
+- 多元素过渡：当有相同标签名的元素切换时，需要通过 key 特性设置唯一的值来标记以让 Vue 区分它们，否则 Vue 为了效率只会替换相同标签内部的内容。即使在技术上没有必要，给在 <transition> 组件中的多个元素设置 key 是一个更好的实践。
+- 这是 <transition> 的默认行为 - 进入和离开同时发生。
+- 同时生效的进入和离开的过渡不能满足所有要求，所以 Vue 提供了 过渡模式：in-out、out-in。
+- 多个组件的过渡简单很多 - 我们不需要使用 key 特性。相反，我们只需要使用动态组件。
+- 列表过渡：使用 <transition-group> 组件。
+- <transition-group> 组件还有一个特殊之处。不仅可以进入和离开动画，还可以改变定位。要使用这个新功能只需了解新增的 v-move 特性，它会在元素的改变定位的过程中应用。
+- 要创建一个可复用过渡组件，你需要做的就是将 <transition> 或者 <transition-group> 作为根组件，然后将任何子组件放置在其中就可以了。
+
+# 过渡状态
+- 通过 watcher 我们能监听到任何数值属性的数值更新。
+
+# Render函数
+- Vue 推荐在绝大多数情况下使用 template 来创建你的 HTML。然而在一些场景中，你真的需要 JavaScript 的完全编程的能力，这就是 render 函数，它比 template 更接近编译器。
+- createElement()的参数中，组件树中的所有 VNodes 必须是唯一的。
