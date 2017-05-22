@@ -32,4 +32,13 @@
 
 # Render函数
 - Vue 推荐在绝大多数情况下使用 template 来创建你的 HTML。然而在一些场景中，你真的需要 JavaScript 的完全编程的能力，这就是 render 函数，它比 template 更接近编译器。
+- createElement()的参数......略
 - createElement()的参数中，组件树中的所有 VNodes 必须是唯一的。
+- 通过babel-plugin-transform-vue-jsx 插件，可以在Vue中使用JSX。
+- 函数化组件（添加functional属性）：无状态的，无实例的。组件需要的一切都是通过context（上下文）传递。
+- context包括以下属性：props、children、slots、data、parent、listeners、injections。
+- 函数化组件中的slots().default代表匿名slot；children()代表了所有的slot，包括匿名的和具名的。
+- 函数化组件渲染开销低，但是无法显示在Vue的Chrome dev tools中。
+- Vue 的模板实际是编译成了 render 函数。
+
+# 自定义指令
