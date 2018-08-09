@@ -12,8 +12,11 @@
 
 # Vue实例
 - 每个 Vue.js 应用都是通过构造函数 Vue 创建一个 Vue 的根实例 启动的。
+- 每个 Vue 实例都会代理其 data 对象里所有的属性。
+- 除了 data 属性， Vue 实例暴露了一些有用的实例属性与方法。这些属性与方法都有前缀 $。例如：vm.$data、vm.$el。
 - 不要在实例属性或者回调函数中（如 vm.$watch('a', newVal => this.myMethod())）使用箭头函数。
 - 实例的生命周期：beforeCreate、created、beforeMount、mounted、beforeUpdate、updated、beforeDestroy、destroyed。
+- 钩子函数的 this 指向调用它的 Vue 实例。
 
 # 模板语法
 
