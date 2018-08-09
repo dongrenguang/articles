@@ -4,7 +4,7 @@
 > By default axis=0 . This is consistent with the numpy.mean usage when axis is specified explicitly (in numpy.mean , axis==None by default, which computes the mean value over the flattened array) , in which axis=0 along the rows (namely, index in pandas), and axis=1 along the columns.
 
 译文：
-> （在pandas中）axis 的默认取值是 0，用法与 numpy.mean 一致。当 axis 被明确指定时（在 numpy.mean 中，axis 的默认值是 None，表示计算所有维度的全部数据的平均值），axis=0 表示沿着诸行（rows）的方向执行（即 pandas 中的 index），axis=1 表示沿着诸列（columns）的方向执行。
+> （在pandas中）axis 的默认取值是 0，用法与 numpy.mean 一致。当 axis 被明确指定时（在 numpy.mean 中，axis 的默认值是 None，表示计算所有维度的全部数据的平均值），axis=0 表示沿着诸行（rows）的方向执行（即 pandas 中的 index），axis=1 表示沿着诸列（columns）的方向执行。
 
 还有一种解释是：
 > 轴用来为超过一维的数组定义的属性，二维数据拥有两个轴：第 0 轴沿着诸行的方向垂直往下，第 1 轴沿着诸列的方向水平延伸。
@@ -89,4 +89,4 @@ dtype: float64
 对比【代码 5】，这里比较让人困惑。我们特意将 df 的 index 改为['A', 'B']。pandas 官网上对 drop 的 axis 参数的解释是：
 > Whether to drop labels from the index (0 or ‘index’) or columns (1 or ‘columns’).
 
-这里 axis 被设置为 1（同'columns'），**所以将名为'A'的列删除**。更详细地说：沿着诸列（columns，水平）的方向遍历，找到名为'A'（这里是列名）的值，将其一一删除。
+这里 axis 被设置为 1（同'columns'），**所以将名为'A'的列删除**。更详细地说：沿着诸列（columns，水平）的方向遍历，找到名为'A'（这里是列名）的值，将其一一删除。
